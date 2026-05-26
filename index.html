@@ -14,12 +14,12 @@
     }
   </style>
 </head>
-<button>Hi! Im a button! Click me!</button>
 <body>
 
 <button id="theme-toggle">Toggle Dark Mode</button>
 <h1>This text is... text? probably?</h1>
 <p>I really hope this works...</p>
+<button id="attack-btn">Attack</button>
 
 <script>
   const toggleBtn = document.getElementById('theme-toggle');
@@ -27,7 +27,20 @@
   toggleBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
   });
+  
 </script>
+<script>
+  const toggleBtn = document.getElementById('theme-toggle');
 
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
+
+  const attackBtn = document.getElementById('attack-btn');
+
+  attackBtn.addEventListener('click', () => {
+    console.log("attack clicked");
+  });
+</script>
 </body>
 </html>
