@@ -54,9 +54,9 @@
     const uid = document.getElementById("uid").value;
     const response = await fetch(`https://pull-bradford-argue-stable.trycloudflare.com/heal?uid=${uid}`)
   }
-  // Correct button wiring
   document.getElementById("attack-btn").addEventListener("click", attack);
   document.getElementById("inv-btn").addEventListener("click", loadInventory);
+  document.getElementById("heal-btn").addEventListener("click", heal);
 </script>
 
 </body>
