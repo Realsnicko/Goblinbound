@@ -1,58 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body {
-      background-color: #ffffff;
-      color: #000000;
-      transition: background-color 0.1s, color 0.1s;
-    }
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
+from api import get_inventory_data, format_inventory_text
+from SLH2 import load_player_sync
+from battle import preparebattle, run_battle
+app = FastAPI()
 
-    body.dark-mode {
-      background-color: #121212;
-      color: #f9f9f9;
-    }
-  </style>
-</head>
-<body>
+# Normal CORS middleware (still needed)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-<button id="theme-toggle">Toggle Dark Mode</button>
+# FORCE CORS HEADERS ALWAYS
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    return response
 
-<h1>GoblinBound Web UI</h1>
+@app.get("/")
+def rooot():
+    return {"status": "GoblinBound API Online"}
 
-<input id="uid" placeholder="Enter UID">
-<button id="attack-btn">Battle</button>
-<button id="inv-btn">Inventory</button>
+@app.get("/inventory", response_class=PlainTextResponse)
+def inventory(uid: int):
+    data = get_inventory_data(uid)
+    return format_inventory_text(data)
 
-<pre id="output"></pre>
+@app.get("/battle", response_class=PlainTextResponse)
+def battle(uid: int):
+    try:
+        data = load_player_sync(uid)
+        player, enemy, _ = preparebattle(data, uid=uid)
+        result = run_battle(player, enemy, uid=uid)
+        return result["log"]
 
-<script>
-  // Dark mode toggle
-  const toggleBtn = document.getElementById('theme-toggle');
-  toggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-  });
-
-  // Battle
-  async function attack() {
-    const uid = document.getElementById("uid").value;
-    const response = await fetch(`https://pull-bradford-argue-stable.trycloudflare.com/battle?uid=${uid}`);
-    const text = await response.text();
-    document.getElementById("output").innerText = text;
-  }
-
-  // Inventory
-  async function loadInventory() {
-    const uid = document.getElementById("uid").value;
-    const response = await fetch(`https://pull-bradford-argue-stable.trycloudflare.com/inventory?uid=${uid}`);
-    const text = await response.text();
-    document.getElementById("output").innerText = text;
-  }
-
-  // Correct button wiring
-  document.getElementById("attack-btn").addEventListener("click", attack);
-  document.getElementById("inv-btn").addEventListener("click", loadInventory);
-</script>
-
-</body>
-</html>
+    except Exception as e:
+        print("BATTLE ERROR:", e)
+        raise HTTPException(status_code=500, detail=str(e))
