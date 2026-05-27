@@ -23,6 +23,7 @@
 <input id="uid" placeholder="Enter UID">
 <button id="attack-btn">Battle</button>
 <button id="inv-btn">Inventory</button>
+<button id="potion-btn">Use Potion</button>
 
 <pre id="output"></pre>
 
@@ -49,6 +50,10 @@
     document.getElementById("output").innerText = text;
   }
 
+  async function heal() {
+    const uid = document.getElementById("uid").value;
+    const response = await fetch(`https://pull-bradford-argue-stable.trycloudflare.com/heal?uid=${uid}`)
+  }
   // Correct button wiring
   document.getElementById("attack-btn").addEventListener("click", attack);
   document.getElementById("inv-btn").addEventListener("click", loadInventory);
