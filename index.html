@@ -25,7 +25,8 @@
 <button id="attack-btn">Battle</button>
 <button id="inv-btn">Inventory</button>
 <button id="potion-btn">Use Potion</button>
-<button id="ver">Verify With OAuth2</button>
+<button id="shop-btn">List Shop Items</button>
+<button id="ver-btn">Verify With OAuth2</button>
 
 <pre id="output"></pre>
 
@@ -68,6 +69,11 @@ if (uid) {
     const text = await response.text();
     document.getElementById("output").innerText = text;
   }
+  async function shop() {
+    const response = await fetch(`https://pull-bradford-argue-stable.trycloudflare.com/shop`);
+    const text = await response.text();
+    document.getElementById("output").innerText = text;
+  }
 
   // OAuth2 constants
   const CLIENT_ID = "1480463795272028192";
@@ -100,7 +106,8 @@ if (uid) {
   document.getElementById("attack-btn").addEventListener("click", attack);
   document.getElementById("inv-btn").addEventListener("click", loadInventory);
   document.getElementById("potion-btn").addEventListener("click", heal);
-  document.getElementById("ver").addEventListener("click", verify);
+  document.getElementById("shop-btn").addEventListener("click", shop);
+  document.getElementById("ver-btn").addEventListener("click", verify);
 
   // Run OAuth handler on page load
   handleOAuth();
