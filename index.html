@@ -20,7 +20,7 @@
 
 <h1>GoblinBound Web UI</h1>
 
-<input id="uid" placeholder="Enter UID">
+<div id="uid-display">UID: <i>Not verified</i></div>
 <button id="attack-btn">Battle</button>
 <button id="inv-btn">Inventory</button>
 <button id="potion-btn">Use Potion</button>
@@ -84,7 +84,8 @@ if (uid) {
 
     if (!code) return; // No OAuth2 code → do nothing
 
-    document.getElementById("output").innerText = "Verifying Discord account...";
+    document.getElementById("uid-display").innerHTML =
+      `UID: <b>${uid}</b>`;
 
     const res = await fetch(`https://pull-bradford-argue-stable.trycloudflare.com/oauth2/callback?code=${code}`);
     const data = await res.json();
